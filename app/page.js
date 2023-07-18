@@ -7,6 +7,7 @@ import Image from 'next/image'
 
 import DeckGL from '@deck.gl/react/typed';
 import {ScatterplotLayer} from '@deck.gl/layers/typed';
+import {HexagonLayer} from '@deck.gl/aggregation-layers';
 
 
 const mapBoxToken = 'pk.eyJ1IjoiamFuZG85OSIsImEiOiJjbGpvcHA3ancxZWM5M3NsNW5qOWdhejE5In0.05RAcHQK3O3n-7lkRN1TXQ'
