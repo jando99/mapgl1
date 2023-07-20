@@ -32,11 +32,40 @@ const layer = new ScatterplotLayer({
   getLineColor: d => [255, 0, 0]
 });
 
+function getHexagonLayer() {
+  const DATA_URI = 'https://data.lacity.org/resource/6rrh-rzua.json';
+  const QS = `?$limit=150000&$WHERE=within_box(location_1, 33.7035, -118.6682, 34.8233, -117.6464) AND location_1 IS NOT NULL`;
+
+  const HEXAGON_LAYER = new HexagonLayer({
+      id: 'heatmap',
+      data: DATA_URI + QS,
+      colorDomain: [0,50],
+      getPosition: d => [+d.location_1.longitude, +d.location_1.latitude],
+      colorRange: [
+        [0, 171, 152],   // Cold color (teal)
+        [72, 189, 150],  // Cool color (green)
+        [116, 255, 255], // Neutral color (light blue)
+        [196, 255, 255], // Warm color (light pink)
+        [255, 186, 122], // Warm color (peach)
+        [255, 106, 106]  // Warm color (coral/red)
+      ],         
+      elevationRange: [0, 300],
+      elevationScale: 250,
+      extruded: true,
+      radius: 100,        
+      opacity: 0.2,        
+      upperPercentile: 50,
+      coverage: 0.8
+    });
+    return HEXAGON_LAYER;
+}
+
 export default function Home() {
+  const HEXAGON_LAYER = getHexagonLayer();
   return (
     <main>
       <DeckGL
-          layers={[layer]}
+          layers={[layer,HEXAGON_LAYER]}
           controller
           initialViewState={{
             longitude: -74.0021069,
