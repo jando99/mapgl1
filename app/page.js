@@ -102,12 +102,12 @@ export default function Home() {
           id="deckgl-overlay"
         >
           <div style={{ position: 'absolute', height: 60, width: '100%', backgroundColor: 'rgba(174, 182, 191, 0.2)', justifyContent: 'center',display: 'flex', flexDirection: 'row', alignItems: 'center', padding: 16, gap: 8 }}>
-            <h2 style={{color:'#ff8c00'}}>Choose your Layer and Data!</h2> <br/>
-            <select onChange={handleLayerChange} value={selectedLayer} style={{ backgroundColor: 'rgba(174, 182, 191, 0.2)', color: '#ff8c00', padding: '8px', border: 'none' }}>
+            <h2 style={{color:'#FFA500'}}>Choose your Layer and Data!</h2> <br/>
+            <select onChange={handleLayerChange} value={selectedLayer} style={{ backgroundColor: 'rgba(174, 182, 191, 0.2)', color: '#FFA500', padding: '8px', border: 'none' }}>
               <option value="scatterplot">Scatterplot Layer</option>
               <option value="hexagon" >Hexagon Layer</option>
             </select>
-            <select onChange={handleDatasetChange} value={selectedDataset} style={{ backgroundColor: 'rgba(174, 182, 191, 0.2)', color: '#ff8c00', padding: '8px', border: 'none' }}>
+            <select onChange={handleDatasetChange} value={selectedDataset} style={{ backgroundColor: 'rgba(174, 182, 191, 0.2)', color: '#FFA500', padding: '8px', border: 'none' }}>
               <option value="la">LA Active Businesses</option>
               <option value="nyc">NYC Trees</option>
             </select>
