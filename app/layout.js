@@ -4,7 +4,7 @@ import { Inter } from 'next/font/google'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata = {
-  title: 'Basic Map GL',
+  title: 'CitySync: React, DeckGL & Data Fusion',
   description: 'Visualize Traffic Dataset with WebGL',
 }
 

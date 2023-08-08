@@ -1,6 +1,16 @@
+/*
+  -Created by Fernando Valle 08/08/2023
+  -Project Manager: Yuya Fujimoto
+  -Open Avenues Micro-Internship: "Visualize Traffic Dataset with WebGL"
+  
+  This Program demonstrates the usage of Next.Js React framework, DeckGL and Mapbox to vizulaize data onto a map.
+  Users are able to freely switch between both NYC data, LA data and DeckGL layers that corrhespond to the data such
+  as Scatterplot, Hexagon and trips layer.
+*/
+
 'use client'
 
-import React, { useState, ChangeEvent } from 'react';
+import React, { useState, useEffect } from 'react';
 import Map from 'react-map-gl';
 import Head from 'next/head'
 import Image from 'next/image'
@@ -8,10 +18,12 @@ import Image from 'next/image'
 import DeckGL from '@deck.gl/react/typed';
 import {ScatterplotLayer} from '@deck.gl/layers/typed';
 import {HexagonLayer} from '@deck.gl/aggregation-layers';
+import { TripsLayer } from '@deck.gl/geo-layers';
 
-
+//map token
 const mapBoxToken = 'pk.eyJ1IjoiamFuZG85OSIsImEiOiJjbGpvcHA3ancxZWM5M3NsNW5qOWdhejE5In0.05RAcHQK3O3n-7lkRN1TXQ'
 
+//Data function with embedded switch statement to choose and return either NYC or LA data
 const getDataset = (dataset) => {
   switch (dataset) {
     case 'la':
@@ -29,7 +41,7 @@ const getDataset = (dataset) => {
   }
 };
 
-
+//Scatterplot function
 const scatterplotLayer = (city) => {
   const dataset = getDataset(city);
 
@@ -51,6 +63,7 @@ const scatterplotLayer = (city) => {
   });
 };
 
+//Hexagon Layer
 const hexagonLayer = (city) => {
   const dataset = getDataset(city);
   return new HexagonLayer({
@@ -73,11 +86,57 @@ const hexagonLayer = (city) => {
   });
 };
 
+//Main Function
 export default function Home() {
   const [selectedDataset, setSelectedDataset] = useState('nyc');
   const [selectedLayer, setSelectedLayer] = useState('scatterplot');
 
-  const layer = selectedLayer === 'scatterplot' ? scatterplotLayer(selectedDataset) : hexagonLayer(selectedDataset);
+  const [layers, setLayers] = useState([]);
+  const [ref, setRef] = useState(null);
+
+  //useeffect function to choose to view any of the 3 layers.
+  useEffect(() => {
+    switch (selectedLayer) {
+      case 'scatterplot':
+        if (ref) clearInterval(ref);
+        setLayers([scatterplotLayer(selectedDataset)]);
+        break;
+      case 'hexagon':
+        if (ref) clearInterval(ref);
+        setLayers([hexagonLayer(selectedDataset)]);
+        break;
+      case 'trips':
+        const timer = setInterval(() => { //Trips function to display uber trips data
+          setLayers([
+            new TripsLayer({
+              id: 'trips',
+              data:
+                'https://raw.githubusercontent.com/uber-common/deck.gl-data/master/examples/trips/trips-v7.json',
+              getPath: (d) => {
+                return d.path;
+              },
+              getTimestamps: (d) => {
+                return d.timestamps;
+              },
+              getColor: (d) => {
+                return d.vendor === 0 ? [252, 192, 30] : [23, 184, 190];
+              },
+              opacity: 0.8,
+              widthMinPixels: 4,
+              rounded: true,
+              trailLength: 180,
+              currentTime: (performance.now() % 20000) / 10,
+              shadowEnabled: false,
+            }),
+          ]);
+        }, 50);
+        console.log({ timer });
+        setRef(timer);
+        break;
+      default:
+        throw new Error('Invalid layer');
+    }
+  }, [selectedLayer, selectedDataset]);
 
   const handleLayerChange = (x) => {
     const newSelectedLayer = x.target.value;
@@ -89,10 +148,13 @@ export default function Home() {
     setSelectedDataset(newSelectedDataset);
   };
   
-  return (
+  return ( //html5 with embedded css to show layers and data
     <main>
+      <Head>  
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
       <DeckGL
-          layers={[layer]}
+          layers={[layers]}
           controller
           initialViewState={{
             longitude: -74.0021069,
@@ -103,14 +165,21 @@ export default function Home() {
         >
           <div style={{ position: 'absolute', height: 60, width: '100%', backgroundColor: 'rgba(174, 182, 191, 0.2)', justifyContent: 'center',display: 'flex', flexDirection: 'row', alignItems: 'center', padding: 16, gap: 8 }}>
             <h2 style={{color:'#FFA500'}}>Choose your Layer and Data!</h2> <br/>
+            <span style={{color:'#FFA500'}}>Layer: </span>
             <select onChange={handleLayerChange} value={selectedLayer} style={{ backgroundColor: 'rgba(174, 182, 191, 0.2)', color: '#FFA500', padding: '8px', border: 'none' }}>
               <option value="scatterplot">Scatterplot Layer</option>
               <option value="hexagon" >Hexagon Layer</option>
+              <option value="trips" >Traffic Layer</option>
             </select>
+            <span style={{color:'#FFA500'}}>Dataset: </span>
+              {selectedLayer === 'trips' ? (
+                <div style={{color:'#FFA500'}}>NYC</div>
+              ) : (
             <select onChange={handleDatasetChange} value={selectedDataset} style={{ backgroundColor: 'rgba(174, 182, 191, 0.2)', color: '#FFA500', padding: '8px', border: 'none' }}>
               <option value="la">LA Active Businesses</option>
               <option value="nyc">NYC Trees</option>
             </select>
+            )}
           </div>
           <Map
             mapboxAccessToken={mapBoxToken}
