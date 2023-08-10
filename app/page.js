@@ -165,7 +165,7 @@ export default function Home() {
           Welcome to CitySync Support! <br/>
           Please choose a layer and dataset from the dropdowns,<br/>
           then move to either Los Angeles Area or New York City to view layers and data!<br/>
-          Click <span style={{color:'#00ffff'}}>'Help?'</span> to Close!
+          Click <span style={{color:'#00ffff'}}>Help?</span> to Close!
         </p>
       </div>
     );
