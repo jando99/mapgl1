@@ -119,7 +119,7 @@ export default function Home() {
                 return d.timestamps;
               },
               getColor: (d) => {
-                return d.vendor === 0 ? [252, 192, 30] : [23, 184, 190];
+                return d.vendor === 0 ? [0, 255, 255] : [218, 112, 214];
               },
               opacity: 0.8,
               widthMinPixels: 4,
@@ -147,6 +147,29 @@ export default function Home() {
     const newSelectedDataset = x.target.value;
     setSelectedDataset(newSelectedDataset);
   };
+
+  // line 151 to 171 is pop up window function to help users if they are confused with app functions
+  const [showPopup, setShowPopup] = useState(false);
+
+  const handlePopupToggle = () => {
+    console.log("Toggling pop-up visibility");
+    setShowPopup(!showPopup);
+  };
+
+  const Popup = () => {
+    return (
+      <div
+        style={{position: 'absolute', top: '60px', left: '20px', background: 'rgba(208, 211, 212, 0.5)', border: '5px solid #00ffff', padding: '8px', borderRadius: '4px', zIndex: 1, }}
+      >
+        <p style={{color:'rgb(249, 253, 0)'}}>
+          Welcome to CitySync Support! <br/>
+          Please choose a layer and dataset from the dropdowns,<br/>
+          then move to either Los Angeles Area or New York City to view layers and data!<br/>
+          Click <span style={{color:'#00ffff'}}>'Help?'</span> to Close!
+        </p>
+      </div>
+    );
+  };
   
   return ( //html5 with embedded css to show layers and data
     <main>
@@ -163,23 +186,26 @@ export default function Home() {
           }}
           id="deckgl-overlay"
         >
+          {showPopup && <Popup />}
           <div style={{ position: 'absolute', height: 60, width: '100%', backgroundColor: 'rgba(174, 182, 191, 0.2)', justifyContent: 'center',display: 'flex', flexDirection: 'row', alignItems: 'center', padding: 16, gap: 8 }}>
-            <h2 style={{color:'#FFA500'}}>Choose your Layer and Data!</h2> <br/>
-            <span style={{color:'#FFA500'}}>Layer: </span>
-            <select onChange={handleLayerChange} value={selectedLayer} style={{ backgroundColor: 'rgba(174, 182, 191, 0.2)', color: '#FFA500', padding: '8px', border: 'none' }}>
-              <option value="scatterplot">Scatterplot Layer</option>
-              <option value="hexagon" >Hexagon Layer</option>
-              <option value="trips" >Traffic Layer</option>
+            <h2 style={{color:'rgb(249, 253, 0)'}}>Choose your Layer and Data!</h2> <br/>
+            <span style={{color:'rgb(249, 253, 0)'}}>Layer: </span>
+            <select onChange={handleLayerChange} value={selectedLayer} style={{ backgroundColor: 'rgba(174, 182, 191, 0.2)', color: '#00ffff', padding: '8px', border: 'none' }}>
+              <option value="scatterplot" className="custom-option">Scatterplot Layer</option>
+              <option value="hexagon" className="custom-option">Hexagon Layer</option>
+              <option value="trips" className="custom-option">Traffic Layer</option>
             </select>
-            <span style={{color:'#FFA500'}}>Dataset: </span>
+            <span style={{color:'rgb(249, 253, 0)'}}>Dataset: </span>
               {selectedLayer === 'trips' ? (
-                <div style={{color:'#FFA500'}}>NYC</div>
+                <div style={{color:'#00ffff'}}>NYC</div>
               ) : (
-            <select onChange={handleDatasetChange} value={selectedDataset} style={{ backgroundColor: 'rgba(174, 182, 191, 0.2)', color: '#FFA500', padding: '8px', border: 'none' }}>
-              <option value="la">LA Active Businesses</option>
-              <option value="nyc">NYC Trees</option>
+            <select onChange={handleDatasetChange} value={selectedDataset} style={{ backgroundColor: 'rgba(174, 182, 191, 0.2)', color: '#00ffff', padding: '8px', border: 'none' }}>
+              <option value="la" className="custom-option">LA Active Businesses</option>
+              <option value="nyc" className="custom-option">NYC Trees</option>
             </select>
             )}
+            <br/>
+            <button style={{color:'#00ffff'}} onClick={handlePopupToggle}>Help?</button>
           </div>
           <Map
             mapboxAccessToken={mapBoxToken}
@@ -187,6 +213,9 @@ export default function Home() {
             mapStyle="mapbox://styles/mapbox/dark-v9"
           />
         </DeckGL>
+        <footer style={{position: 'absolute', bottom: 0, left: 0, width: '100%', textAlign: 'center', backgroundColor: 'rgba(174, 182, 191, 0.2)', color: 'rgb(249, 253, 0)', padding: '8px 0',}}
+          >© {new Date().getFullYear()} Copyright by <a href="https://github.com/jando99/mapgl1.git"> Fernando Valle </a>
+        </footer>
     </main>
   )
 }

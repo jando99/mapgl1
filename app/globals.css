@@ -15,3 +15,9 @@
     --background-end-rgb: 0, 0, 0;
   }
 }
+
+.custom-option,
+.custom-option:checked {
+  color: #00ffff;
+  background-color: #566573;
+}
