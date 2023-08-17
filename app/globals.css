@@ -18,6 +18,8 @@
 
 .custom-option,
 .custom-option:checked {
-  color: #00ffff;
-  background-color: #566573;
+  background-Color: 'rgba(174, 182, 191, 0.1)';
+}
+.custom-option:hover{
+  color: red;
 }
